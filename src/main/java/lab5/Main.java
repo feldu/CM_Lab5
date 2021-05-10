@@ -6,8 +6,8 @@ import lab5.io.ConsoleWriter;
 import lab5.io.Reader;
 import lab5.io.Writer;
 import lab5.method.InterpolationMethod;
-import lab5.method.LagrangePolynomial;
-import lab5.method.NewtonPolynomial;
+import lab5.method.LagrangePolynomialMethod;
+import lab5.method.NewtonPolynomialMethod;
 import lab5.table.Table;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -62,8 +62,8 @@ public class Main {
         out = new ConsoleWriter();
         if (args.length > 1)
             throw new RuntimeException("Неверное количество аргументов\n" + commandFormat);
-        if (args[0].equals("-l")) method = new LagrangePolynomial();
-        else if (args[0].equals("-n")) method = new NewtonPolynomial();
+        if (args[0].equals("-l")) method = new LagrangePolynomialMethod();
+        else if (args[0].equals("-n")) method = new NewtonPolynomialMethod();
         else throw new RuntimeException("Неверное формат команды\n" + commandFormat);
 
     }

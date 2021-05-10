@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class LagrangePolynomial implements InterpolationMethod {
+public class LagrangePolynomialMethod implements InterpolationMethod {
     /*
 0,1 1,25
 0,2 2,38
