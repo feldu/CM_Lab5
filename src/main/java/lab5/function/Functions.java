@@ -9,12 +9,14 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 import static java.lang.Math.pow;
+import static java.lang.Math.sin;
 
 @Getter
 public enum Functions {
     f1(x -> 0.5 * x, "y = 0.5x"),
     f2(Math::sin, "y = sin(x)"),
-    f3(x -> pow(x, 3) - x + 4, "y = x^3 - x + 4");
+    f3(x -> pow(x, 3) - x + 4, "y = x^3 - x + 4"),
+    f4(x -> 2*sin(pow(x, 2)), "y = 2*sin(x^2)");
     private Function<Double, Double> function;
     private String textView;
     private double left;
