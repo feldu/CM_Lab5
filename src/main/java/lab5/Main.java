@@ -8,11 +8,16 @@ import lab5.io.Writer;
 import lab5.method.InterpolationMethod;
 import lab5.method.LagrangePolynomialMethod;
 import lab5.method.NewtonPolynomialMethod;
+import lab5.plot.Plot;
+import lab5.plot.Series;
 import lab5.table.Table;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.InputMismatchException;
+import java.util.function.Function;
 
 
 @Slf4j
@@ -29,11 +34,12 @@ public class Main {
     public static void main(String[] args) {
         configure(args);
         try {
-            Table table =  getValuesTable();
-            double x = in.readDoubleWithMessage("Введите значение аргумента интерполяции: ");
-            double functionValue = method.solve(table, x);
-            out.printInfo("Приближённое значение функции, при x=" + x + ": " + functionValue);
-//            table.getMap().forEach((x, y) -> System.out.println("x " + x + ", y " + y));
+            Table table = getValuesTable();
+            double interpolationX = in.readDoubleWithMessage("Введите значение аргумента интерполяции: ");
+            double functionValue = method.solve(table, interpolationX);
+            drawPlot(table, interpolationX, functionValue);
+            out.printInfo("Приближённое значение функции, при x=" + interpolationX + ": " + functionValue);
+
         } catch (InputMismatchException e) {
             log.error("Incorrect input type");
             out.printError("Введённые данные некоректны");
@@ -45,6 +51,34 @@ public class Main {
             out.printError(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private static void drawPlot(Table table, double interpolationX, double interpolationY) {
+        Series inputSeries, interpolationNodes = null;
+        if (function == null) {
+            inputSeries = new Series("Таблица");
+            inputSeries.setXData(table.getXData());
+            inputSeries.setYData(table.getYData());
+            inputSeries.setHideLines(true);
+
+        } else {
+            inputSeries = new Series(function.getTextView(), function.getFunction(), function.getLeft(), function.getRight());
+            inputSeries.setHidePoints(true);
+            interpolationNodes = new Series("Узлы интерполяции");
+            interpolationNodes.setXData(table.getXData());
+            interpolationNodes.setYData(table.getYData());
+            interpolationNodes.setHideLines(true);
+        }
+        Function<Double, Double> interpolatedFunction = x -> method.solve(table, x);
+        Series interpolatedSeries = new Series("Интерполяционная функция", interpolatedFunction, table.getLeftBorder(), table.getRightBorder());
+        interpolatedSeries.setHidePoints(true);
+        Series answer = new Series("Ответ");
+        answer.setXData(Collections.singletonList(interpolationX));
+        answer.setYData(Collections.singletonList(interpolationY));
+        answer.setHideLines(true);
+        Plot plot = new Plot("Интерполяция",  interpolatedSeries, inputSeries, answer);
+        if (interpolationNodes != null) plot.addSeries(interpolationNodes);
+        plot.save("Интерполяция");
     }
 
     private static Table readTable() {
@@ -78,8 +112,10 @@ public class Main {
         message.append(Functions.values().length + 1).append("). ").append("Ввести таблицу вручную");
         try {
             int selectedValue = in.readIntWithMessage(message.toString());
-            if (selectedValue > Functions.values().length) table = readTable();
-            else {
+            if (selectedValue > Functions.values().length) {
+                table = readTable();
+                function = null;
+            } else {
                 function = Functions.values()[selectedValue - 1];
                 log.info("Chosen function is: {}", function.getTextView());
                 chooseLimits();
