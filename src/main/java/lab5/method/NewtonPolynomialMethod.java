@@ -1,13 +1,11 @@
 package lab5.method;
 
-import lab5.function.Functions;
 import lab5.table.Table;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
-import java.util.function.Function;
 
 
 /*
