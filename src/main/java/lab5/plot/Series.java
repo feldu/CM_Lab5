@@ -13,7 +13,7 @@ public class Series {
     private String seriesName;
     private List<Double> xData;
     private List<Double> yData;
-    public static final int STEP_CNT = 50;
+    public static final int STEP_CNT = 200;
     private boolean hidePoints;
     private boolean hideLines;
 
