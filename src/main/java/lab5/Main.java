@@ -48,7 +48,6 @@ public class Main {
             out.printError(e.getMessage());
         } catch (Exception e) {
             out.printError(e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -75,25 +74,24 @@ public class Main {
         answer.setXData(Collections.singletonList(interpolationX));
         answer.setYData(Collections.singletonList(interpolationY));
         answer.setHideLines(true);
-        Plot plot = new Plot("Интерполяция",  interpolatedSeries, inputSeries, answer);
+        Plot plot = new Plot("Интерполяция", interpolatedSeries, inputSeries, answer);
         if (interpolationNodes != null) plot.addSeries(interpolationNodes);
         plot.save("Интерполяция");
     }
 
     private static Table readTable() {
         int n = in.readIntWithMessage("Введите количество точек:");
-        if (n < 12) {
-            log.error("Less than 12 points");
-        }
         out.printInfo("Вводите точки таблицы в формате: x(i) y(i)");
-        return in.readTable(n);
+        Table table = in.readTable(n);
+        if (table.getMap().size() != n) throw new RuntimeException("Введены точки с одинаковым значением X.");
+        return table;
     }
 
     @SneakyThrows
     private static void configure(String[] args) {
         in = new ConsoleReader();
         out = new ConsoleWriter();
-        if (args.length > 1)
+        if (args.length != 1)
             throw new RuntimeException("Неверное количество аргументов\n" + commandFormat);
         if (args[0].equals("-l")) method = new LagrangePolynomialMethod();
         else if (args[0].equals("-n")) method = new NewtonPolynomialMethod();
